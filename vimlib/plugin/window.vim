@@ -1,6 +1,9 @@
 " ==== Window Manager =========================================== {{{
 if exists('g:window_manager_loaded') | finish | endif
 
+"
+"=VERSION 0.3
+"
 let g:window_manager_version = 0.3
 let g:window_manager_loaded = 1
 

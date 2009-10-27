@@ -1,4 +1,5 @@
-" ==== Window Manager =========================================== {{{
+
+" ==== Search Window Manager =========================================== {{{
 if exists('g:window_manager_loaded') | finish | endif
 
 fun! s:echo(msg)

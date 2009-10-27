@@ -1,13 +1,18 @@
 " ==== Window Manager =========================================== {{{
 if exists('g:window_manager_loaded') | finish | endif
 
+fun! s:echo(msg)
+  redraw
+  echomsg a:msg
+endf
+
 "
 "=VERSION 0.3
 "
 let g:window_manager_version = 0.3
 let g:window_manager_loaded = 1
 
-let g:warning_preserve_time = '700m'
+let g:warning_preserve_time = '500m'
 
 let g:AutoComplPopGuard = { }
 fun! g:AutoComplPopGuard.check()
@@ -18,7 +23,7 @@ fun! g:AutoComplPopGuard.check()
       \ && exists("#CursorMovedI")
     " then we should disable it , because the autocmd CursorMoveI conflicts
     if ! exists('s:autocomplpop_warning_show') 
-      call libperl#echo("AutoComplPop Disabled: the cursor moved event of autocomplpop conflicts with me.")
+      call s:echo("AutoComplPop Disabled: the cursor moved event of autocomplpop conflicts with me.")
       exec 'sleep ' . g:warning_preserve_time 
       let  s:autocomplpop_warning_show = 1
     endif
@@ -29,7 +34,7 @@ endf
 
 fun! g:AutoComplPopGuard.reveal()
   if exists('g:AutoComplPop_Behavior') && exists('reveal_autocomplpop')
-    call libperl#echo("AutoComplPop Enabled.")
+    call s:echo("AutoComplPop Enabled.")
     AutoComplPopEnable
     unlet reveal_autocomplpop 
   endif
@@ -63,7 +68,7 @@ fun! WindowManager.split(position,type,size)
       bw
       startinsert
       call cursor( line('.') , col('.') + 1 )
-      call libperl#echo( v:exception )
+      call s:echo( v:exception )
       return
     catch /^ERROR:/
       bw " close buffer

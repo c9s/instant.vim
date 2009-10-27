@@ -3,12 +3,14 @@
 
 =author         Cornelius (林佑安) (cornelius.howl@gmail.com)
 
-=version_from   vimlib/plugin/window.vim
+=version_from   vimlib/autoload/swindow.vim
 
 =vim_version    >= 7.2
 
 =type           plugin
 
 =dependency
+
+
 
 =repository git://....../

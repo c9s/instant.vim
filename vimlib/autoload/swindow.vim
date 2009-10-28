@@ -1,6 +1,40 @@
 
+
+
+
 " ==== Search Window Class =========================================== {{{
-if exists('g:window_manager_loaded') | finish | endif
+
+" Autocomplpop Conflict Guard
+let g:acpguard_class = { }
+let g:acpguard_class.warning_pres_t = '500m'
+
+fun! g:acpguard_class.check()
+
+  " check for autocomplpop.vim
+  " we can not check loaded_autocomplpop variable , because we might load
+  " window.vim before we load autocomplpop.
+  if ( exists('g:AutoComplPop_Behavior') || exists('g:loaded_acp') ) 
+      \ && exists("#CursorMovedI")
+    " then we should disable it , because the autocmd CursorMoveI conflicts
+    
+    if ! exists( 'self.warning_show' )
+      call s:echo("AutoComplPop Disabled: the cursor moved event of autocomplpop conflicts with me.")
+      exec 'sleep ' . self.warning_pres_t
+      let  self.warning_show = 1
+    endif
+    AutoComplPopDisable
+    let self.reveal_autocomplpop = 1
+  endif
+
+endf
+
+fun! g:acpguard_class.reveal()
+  if exists('g:AutoComplPop_Behavior') && exists('reveal_autocomplpop')
+    call s:echo("AutoComplPop Enabled.")
+    AutoComplPopEnable
+    unlet self.reveal_autocomplpop 
+  endif
+endf
 
 fun! s:echo(msg)
   redraw
@@ -16,7 +50,8 @@ let swindow#class.loaded = 1
 let swindow#class.version = 0.3
 
 fun! swindow#class.open(pos,type,size)
-  call acpguard#class.check()
+  echo g:acpguard_class
+  call g:acpguard_class.check()
   call self.split(a:pos,a:type,a:size)
 endf
 
@@ -112,7 +147,7 @@ endf
 fun! swindow#class.close()
   " since we call buffer back , we dont need to remove buffername
   " silent 0f
-  call acpguard#class.reveal()
+  call g:acpguard_class.reveal()
   redraw
 endf
 

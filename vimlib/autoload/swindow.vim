@@ -50,7 +50,6 @@ let swindow#class.loaded = 1
 let swindow#class.version = 0.3
 
 fun! swindow#class.open(pos,type,size)
-  echo g:acpguard_class
   call g:acpguard_class.check()
   call self.split(a:pos,a:type,a:size)
 endf

@@ -16,7 +16,7 @@ let swindow#class.loaded = 1
 let swindow#class.version = 0.3
 
 fun! swindow#class.open(pos,type,size)
-  call acpguard#object.check()
+  call acpguard#class.check()
   call self.split(a:pos,a:type,a:size)
 endf
 
@@ -112,7 +112,7 @@ endf
 fun! swindow#class.close()
   " since we call buffer back , we dont need to remove buffername
   " silent 0f
-  call acpguard#object.reveal()
+  call acpguard#class.reveal()
   redraw
 endf
 

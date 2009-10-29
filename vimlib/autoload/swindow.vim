@@ -60,6 +60,8 @@ fun! swindow#class.split(position,type,size)
     elseif a:type == 'vsplit' | let act = 'vnew'
     else | let act = 'new' | endif
 
+    let self.win_type = a:type
+
     exec a:position . ' ' . a:size . act
     let self.buf_nr = bufnr('%')
     setlocal noswapfile buftype=nofile bufhidden=hide

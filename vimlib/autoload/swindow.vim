@@ -48,6 +48,7 @@ endf
 let swindow#class = { 'buf_nr' : -1 , 'mode' : 0 }
 let swindow#class.loaded = 1
 let swindow#class.version = 0.3
+let swindow#class.predefined_result = [ ] " should be list of text
 
 fun! swindow#class.open(pos,type,size)
   call g:acpguard_class.check()
@@ -64,33 +65,27 @@ fun! swindow#class.split(position,type,size)
 
     exec a:position . ' ' . a:size . act
     let self.buf_nr = bufnr('%')
-    setlocal noswapfile buftype=nofile bufhidden=hide
-    setlocal nobuflisted nowrap cursorline nonumber fdc=0
 
-    try
-      call self.init_buffer()
-      call self.init_syntax()
-      call self.init_basic_mapping()
-      call self.init_mapping()
-    catch /^SKIP:/
-      bw
-      startinsert
-      call cursor( line('.') , col('.') + 1 )
-      call s:echo( v:exception )
-      return
-    catch /^ERROR:/
-      bw " close buffer
-      echo v:exception
-      return
-    endtry
+    cal self._init_buffer()
+    cal self.init_buffer()
+    cal self.init_syntax()
+    cal self.init_basic_mapping()
+    cal self.init_mapping()
 
-    call self.start()
+    let lines = self.filter_result( self.predefined_result )
+    if len(lines) > 0 
+      cal self.render( lines )
+    endif
+
+
+    cal self.start()
   elseif bufwinnr(self.buf_nr) == -1 
     exec a:position . ' ' . a:size . a:type
     execute self.buf_nr . 'buffer'
-    call self.buffer_reload_init()
+    cal self.buffer_reload_init()
   elseif bufwinnr(self.buf_nr) != bufwinnr('%')
     execute bufwinnr(self.buf_nr) . 'wincmd w'
+    cal self.buffer_reload_init()
   endif
 endf
 
@@ -110,7 +105,13 @@ endf
 
 " init_buffer() 
 " initialize a new buffer for search window.
-fun! swindow#class.init_buffer() 
+fun! swindow#class._init_buffer() 
+
+endf
+
+fun! swindow#class.init_buffer()
+  setlocal noswapfile  buftype=nofile bufhidden=hide
+  setlocal nobuflisted nowrap cursorline nonumber fdc=0
 endf
 
 " init_syntax() 
@@ -138,11 +139,15 @@ fun! swindow#class.init_basic_mapping()
   inoremap <buffer> <C-c> <ESC><C-W>q
 endf
 
+fun! swindow#class.render(lines)
+  let r=join( a:lines , "\n" )
+  silent put=r
+endf
+
 " reder_result()
 " put list into buffer
-fun! swindow#class.render_result(matches)
-  let r=join( a:matches , "\n" )
-  silent put=r
+fun! swindow#class.filter_result()
+  return []
 endf
 
 fun! swindow#class.close()

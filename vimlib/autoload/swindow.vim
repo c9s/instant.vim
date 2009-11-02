@@ -48,7 +48,7 @@ endf
 let swindow#class = {
   \'buf_nr' : -1 ,
   \'mode' : 0 , 
-  \'predefined_result': [] ,
+  \'predefined_index': [] ,
   \'max_result': 100
   \}
 let swindow#class.loaded = 1
@@ -76,14 +76,8 @@ fun! swindow#class.split(position,type,size)
     cal self.init_basic_mapping()
     cal self.init_mapping()
 
-    echo self.predefined_result
-    let lines = self.filter_result( self.predefined_result )
-    if len(lines) > 0 
-      if len(lines) > self.max_result 
-        let lines = remove( lines , 0 , self.max_result )
-      endif
-      cal self.render( lines )
-    endif
+    let self.predefined_index = self.index()
+    cal self.update_search()
 
     cal self.start()
   elseif bufwinnr(self.buf_nr) == -1 
@@ -93,6 +87,31 @@ fun! swindow#class.split(position,type,size)
   elseif bufwinnr(self.buf_nr) != bufwinnr('%')
     execute bufwinnr(self.buf_nr) . 'wincmd w'
     cal self.buffer_reload_init()
+  endif
+endf
+
+fun! swindow#class.index()
+  return []
+endf
+
+fun! swindow#class.update_search()
+  let pattern = self.get_pattern()
+  let lines = self.filter_result( pattern , self.predefined_index )
+  if len(lines) > 0 
+    if len(lines) > self.max_result 
+      let lines = remove( lines , 0 , self.max_result )
+    endif
+    cal self.render( lines )
+  endif
+endf
+
+fun! swindow#class.update_highlight()
+  let pattern = self.get_pattern()
+  if strlen( pattern ) > 0
+    exec 'syn clear Search'
+    exec 'syn match Search +'. pattern . '+'
+  else
+    exec 'syn clear Search'
   endif
 endf
 
@@ -110,15 +129,14 @@ endf
 fun! swindow#class.buffer_reload_init()   
 endf
 
-" init_buffer() 
-" initialize a new buffer for search window.
+" _init_buffer() 
+" initialize newly created buffer for search window.
 fun! swindow#class._init_buffer() 
   setlocal noswapfile  buftype=nofile bufhidden=hide
   setlocal nobuflisted nowrap cursorline nonumber fdc=0
 endf
 
 fun! swindow#class.init_buffer()
-
 endf
 
 " init_syntax() 
@@ -167,9 +185,8 @@ endf
 
 " reder_result()
 " put list into buffer
-fun! swindow#class.filter_result(list)
-  let pattern = self.get_pattern()
-  return filter( copy( a:list ) , 'v:val =~ "' . pattern . '"' )
+fun! swindow#class.filter_result(ptn,list)
+  return filter( copy( a:list ) , 'v:val =~ "' . a:ptn . '"' )
 endf
 
 fun! swindow#class.close()

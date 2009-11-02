@@ -45,7 +45,12 @@ endf
 "=VERSION 0.3
 
 " search window manager
-let swindow#class = { 'buf_nr' : -1 , 'mode' : 0 , 'predefined_result': [] }
+let swindow#class = {
+  \'buf_nr' : -1 ,
+  \'mode' : 0 , 
+  \'predefined_result': [] ,
+  \'max_result': 100
+  \}
 let swindow#class.loaded = 1
 let swindow#class.version = 0.3
 
@@ -74,6 +79,9 @@ fun! swindow#class.split(position,type,size)
     echo self.predefined_result
     let lines = self.filter_result( self.predefined_result )
     if len(lines) > 0 
+      if len(lines) > self.max_result 
+        let lines = remove( lines , 0 , self.max_result )
+      endif
       cal self.render( lines )
     endif
 
@@ -138,10 +146,12 @@ fun! swindow#class.init_basic_mapping()
   inoremap <buffer> <C-c> <ESC><C-W>q
 endf
 
+" clear current buffer except pattern line
+" re-render the result ( lines )
 fun! swindow#class.render(lines)
   let old = getpos('.')
 
-  if line('$') > 2 
+  if line('$') > 2
     silent 2,$delete _
   endif
 
@@ -149,6 +159,10 @@ fun! swindow#class.render(lines)
   silent put=r
 
   cal setpos('.',old)
+endf
+
+fun! swindow#class.get_pattern()
+  return getline(1)
 endf
 
 " reder_result()

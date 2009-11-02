@@ -97,12 +97,10 @@ endf
 fun! swindow#class.update_search()
   let pattern = self.get_pattern()
   let lines = self.filter_result( pattern , self.predefined_index )
-  if len(lines) > 0 
-    if len(lines) > self.max_result 
-      let lines = remove( lines , 0 , self.max_result )
-    endif
-    cal self.render( lines )
+  if len(lines) > self.max_result 
+    let lines = remove( lines , 0 , self.max_result )
   endif
+  cal self.render( lines )
 endf
 
 fun! swindow#class.update_highlight()

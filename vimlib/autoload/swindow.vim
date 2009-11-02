@@ -94,6 +94,12 @@ fun! swindow#class.index()
   return []
 endf
 
+fun! swindow#class.update()
+  cal self.update_search()
+  cal self.update_highlight()
+  startinsert
+endfunc
+
 fun! swindow#class.update_search()
   let pattern = self.get_pattern()
   let lines = self.filter_result( pattern , self.predefined_index )

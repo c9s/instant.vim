@@ -45,10 +45,9 @@ endf
 "=VERSION 0.3
 
 " search window manager
-let swindow#class = { 'buf_nr' : -1 , 'mode' : 0 }
+let swindow#class = { 'buf_nr' : -1 , 'mode' : 0 , 'predefined_result': [] }
 let swindow#class.loaded = 1
 let swindow#class.version = 0.3
-let swindow#class.predefined_result = [ ] " should be list of text
 
 fun! swindow#class.open(pos,type,size)
   call g:acpguard_class.check()
@@ -72,11 +71,11 @@ fun! swindow#class.split(position,type,size)
     cal self.init_basic_mapping()
     cal self.init_mapping()
 
+    echo self.predefined_result
     let lines = self.filter_result( self.predefined_result )
     if len(lines) > 0 
       cal self.render( lines )
     endif
-
 
     cal self.start()
   elseif bufwinnr(self.buf_nr) == -1 
@@ -106,12 +105,12 @@ endf
 " init_buffer() 
 " initialize a new buffer for search window.
 fun! swindow#class._init_buffer() 
-
+  setlocal noswapfile  buftype=nofile bufhidden=hide
+  setlocal nobuflisted nowrap cursorline nonumber fdc=0
 endf
 
 fun! swindow#class.init_buffer()
-  setlocal noswapfile  buftype=nofile bufhidden=hide
-  setlocal nobuflisted nowrap cursorline nonumber fdc=0
+
 endf
 
 " init_syntax() 
@@ -140,14 +139,23 @@ fun! swindow#class.init_basic_mapping()
 endf
 
 fun! swindow#class.render(lines)
+  let old = getpos('.')
+
+  if line('$') > 2 
+    silent 2,$delete _
+  endif
+
   let r=join( a:lines , "\n" )
   silent put=r
+
+  cal setpos('.',old)
 endf
 
 " reder_result()
 " put list into buffer
-fun! swindow#class.filter_result()
-  return []
+fun! swindow#class.filter_result(list)
+  let pattern = self.get_pattern()
+  return filter( copy( a:list ) , 'v:val =~ "' . pattern . '"' )
 endf
 
 fun! swindow#class.close()

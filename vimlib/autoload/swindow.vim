@@ -166,17 +166,15 @@ endf
 " re-render the result ( lines )
 fun! swindow#class.render(lines)
   let old = getpos('.')
-
   if line('$') > 2
     silent 2,$delete _
   endif
-
   let r=join( a:lines , "\n" )
   silent put=r
-
   cal setpos('.',old)
 endf
 
+" override this if your pattern is on different line
 fun! swindow#class.get_pattern()
   return getline(1)
 endf

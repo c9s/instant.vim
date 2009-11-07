@@ -1,5 +1,41 @@
 
 
+INSTALL
+=======
+
+    $ sudo cpan VIM::Packager
+    $ vim-packager build
+    $ make install
+
+USAGE
+=====
+
+example:
+
+    let s:yourwindow = copy( swindow#class  )
+    let s:yourwindow.predefined_index = [ 'aaa' , 'aab' , 'aac' ]
+
+    fun! s:yourwindow.index()
+        return self.predefined_index
+        " or 
+        return [ 'something' , 'your want to search' ]
+    endf
+
+    fun! s:yourwindow.init_buffer()
+        setfiletype your_search
+        autocmd CursorMovedI <buffer>       call s:yourwindow.update()
+        autocmd BufWinLeave  <buffer>       call s:yourwindow.close()
+        silent file BufferName
+    endf
+
+    fun! s:yourwindow.init_mapping()
+        " define your mapping here
+        nnoremap <silent> <buffer> <Enter> :call libperl#open_module()<CR>
+    endf
+
+    " 10 is for window height
+    com! Open  :cal s:yourwindow.open('topleft', 'split',10)
+
 
 
 

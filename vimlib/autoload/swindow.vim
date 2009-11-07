@@ -42,7 +42,7 @@ fun! s:echo(msg)
 endf
 
 "
-"=VERSION 0.3
+"=VERSION 0.4
 
 " search window manager
 let swindow#class = {
@@ -52,7 +52,7 @@ let swindow#class = {
   \'max_result': 100
   \}
 let swindow#class.loaded = 1
-let swindow#class.version = 0.3
+let swindow#class.version = 0.4
 
 fun! swindow#class.open(pos,type,size)
   call g:acpguard_class.check()
@@ -168,9 +168,16 @@ fun! swindow#class.init_basic_mapping()
   inoremap <buffer> <C-c> <ESC><C-W>q
 endf
 
+fun! swindow#class.filter_render(lines)
+
+endf
+
 " clear current buffer except pattern line
 " re-render the result ( lines )
 fun! swindow#class.render(lines)
+
+  cal self.filter_render( a:lines )
+
   let old = getpos('.')
   if line('$') > 2
     silent 2,$delete _

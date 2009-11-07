@@ -41,9 +41,6 @@ fun! s:echo(msg)
   echomsg a:msg
 endf
 
-"
-"=VERSION 0.4
-
 " search window manager
 let swindow#class = {
   \'buf_nr' : -1 ,
@@ -52,6 +49,8 @@ let swindow#class = {
   \'max_result': 100
   \}
 let swindow#class.loaded = 1
+
+"=VERSION 0.4
 let swindow#class.version = 0.4
 
 fun! swindow#class.open(pos,type,size)

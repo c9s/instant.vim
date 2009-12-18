@@ -161,8 +161,8 @@ fun! swindow#class.init_basic_mapping()
   nnoremap <buffer> <C-n> j
   nnoremap <buffer> <C-p> k
   nnoremap <buffer> <ESC> <C-W>q
-  "inoremap <buffer> <C-c> <ESC><C-W>q
-  nmap <buffer> i ggA
+  nnoremap <buffer> q <C-W>q
+  nnoremap <buffer> i ggA
 endf
 
 fun! swindow#class.filter_render(lines)

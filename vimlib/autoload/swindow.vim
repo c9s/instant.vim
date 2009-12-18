@@ -1,8 +1,6 @@
-
-
-
-
 " ==== Search Window Class =========================================== {{{
+" Author:  Cornelius (林佑安)
+" Version: 0.4
 
 " Autocomplpop Conflict Guard
 let g:acpguard_class = { }
@@ -50,7 +48,6 @@ let swindow#class = {
   \}
 let swindow#class.loaded = 1
 
-"=VERSION 0.4
 let swindow#class.version = 0.4
 
 fun! swindow#class.open(pos,type,size)
@@ -164,7 +161,8 @@ fun! swindow#class.init_basic_mapping()
   nnoremap <buffer> <C-n> j
   nnoremap <buffer> <C-p> k
   nnoremap <buffer> <ESC> <C-W>q
-  inoremap <buffer> <C-c> <ESC><C-W>q
+  "inoremap <buffer> <C-c> <ESC><C-W>q
+  nmap <buffer> i ggA
 endf
 
 fun! swindow#class.filter_render(lines)
@@ -205,4 +203,3 @@ fun! swindow#class.close()
 endf
 
 " ==== Window Manager =========================================== }}}
-
